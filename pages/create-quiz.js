@@ -1,12 +1,53 @@
-import { useCallback } from "react";
+import { useState, useCallback } from "react";
+import axios from "axios";
 import { useRouter } from "next/router";
 
 const CreateQuiz = () => {
   const router = useRouter();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [quizzes, setQuizzes] = useState([]);
+  const [error, setError] = useState(null);
 
-  const onGroupButtonClick = useCallback(() => {
-    router.push("/finish-create-quiz");
-  }, [router]);
+  const onGroupButtonClick = useCallback(async () => {
+    try {
+      const title = "Today English";
+      const description = "description";
+      const endDate = new Date();
+      const quizzes = [
+        {
+          title: "Cat คืออะไร",
+          textAnswer: "แมว",
+          score: 1,
+        },
+        {
+          title: "Dog คืออะไร",
+          choices: [
+            { choiceText: "หมา", isCorrect: true },
+            { choiceText: "แมว", isCorrect: false },
+            { choiceText: "นก", isCorrect: false },
+            { choiceText: "ไก้", isCorrect: false },
+          ],
+          score: 1,
+        },
+      ];
+
+      await axios.post(
+        "https://oo-cu-quiz.onrender.com/quizSet/",
+        {
+          title,
+          description,
+          endDate,
+          quizzes,
+        },
+        { headers: { authorization: `${localStorage.getItem("token")}`} }
+      );
+      router.push("/finish-create-quiz");
+    } catch (error) {
+      setError("เกิดข้อผิดพลาดในการสร้างควิซ");
+    }
+  });
 
   const onFrameClick = useCallback(() => {
     router.push("/");
@@ -55,42 +96,45 @@ const CreateQuiz = () => {
           </div>
         </div>
       </button>
-      <div className="absolute top-[1559px] left-[148px] text-xl font-medium">
+      <button className="absolute top-[1559px] left-[148px] text-xl font-medium" id="add">
         +เพิ่มโจทย์แบบเลือกคำตอบ
-      </div>
-      <div className="absolute top-[1559px] left-[715px] text-xl font-medium">
+      </button>
+      <button className="absolute top-[1559px] left-[715px] text-xl font-medium" id="add">
         +เพิ่มโจทย์แบบเติมตัวเลือก
-      </div>
+      </button>
       <div className="absolute top-[378px] left-[148px] w-[632px] flex flex-col items-start justify-start gap-[18px]">
         <div className="relative font-medium z-[0]">ชื่อควิซ</div>
         <div className="w-[632px] relative rounded-xl bg-gainsboro-200 box-border h-[71px] z-[1] border-[5px] border-solid border-lightpink" />
-        <div className="w-18 absolute !m-[0] top-[71px] left-[24px] text-xl font-medium text-gray-200 inline-block z-[2]">
-          ชื่อควิซ
+        <div className="w-18 absolute !m-[0] top-[58px] left-[12px] text-xl font-medium text-gray-200 inline-block z-[2]">
+          <input 
+            type="text" placeholder="ชื่อควิซ" id="input"
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
         </div>
       </div>
       <div className="absolute top-[525px] left-[148px] w-[632px] flex flex-col items-start justify-start gap-[18px]">
         <div className="relative font-medium z-[0]">description</div>
         <div className="w-[632px] relative rounded-xl bg-gainsboro-200 box-border h-[71px] z-[1] border-[5px] border-solid border-lightpink" />
-        <div className="w-[108px] absolute !m-[0] top-[71px] left-[24px] text-xl font-medium text-gray-200 inline-block z-[2]">
-          description
+        <div className="w-[108px] absolute !m-[0] top-[58px] left-[12px] text-xl font-medium text-gray-200 inline-block z-[2]">
+          <input 
+            type="text" placeholder="description" id="input"
+            onChange={(e) => setDescription(e.target.value)}
+          />
         </div>
       </div>
       <div className="absolute top-[662px] left-[138px] h-[140px] flex flex-col items-start justify-start p-2.5 box-border text-xl text-gray-200">
         <div className="w-[632px] relative h-[119px]">
           <div className="absolute top-[0px] left-[0px] text-6xl font-medium text-black">
-            เวลาสำหรับการทำ
+            วันที่ปิด
           </div>
-          <div className="absolute top-[48px] left-[0px] rounded-xl bg-gainsboro-200 box-border w-[107px] h-[71px] border-[5px] border-solid border-lightpink" />
-          <div className="absolute top-[48px] left-[120px] rounded-xl bg-gainsboro-200 box-border w-[107px] h-[71px] border-[5px] border-solid border-lightpink" />
-          <div className="absolute top-[71px] left-[20px] font-medium">
-            ชั่วโมง
-          </div>
-          <div className="absolute top-[48px] left-[240px] rounded-xl bg-gainsboro-200 box-border w-[107px] h-[71px] border-[5px] border-solid border-lightpink" />
-          <div className="absolute top-[71px] left-[270px] font-medium">
-            วินาที
-          </div>
-          <div className="absolute top-[71px] left-[157px] font-medium">
-            นาที
+          <div className="absolute top-[48px] left-[0px] rounded-xl bg-gainsboro-200 box-border w-[300px] h-[71px] border-[5px] border-solid border-lightpink" />
+          
+          <div className="absolute top-[58px] left-[18px] font-medium">
+            <input 
+              type="text" placeholder="date" id="inputDate"
+              onChange={(e) => setEndDate(e.target.value)}
+            />
           </div>
         </div>
       </div>

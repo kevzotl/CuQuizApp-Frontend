@@ -1,8 +1,28 @@
-import { useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import axios from "axios";
 import { useRouter } from "next/router";
+import QuizOnHome1 from "./quiz-on-atten";
 
 const CheckInAttendantView = () => {
   const router = useRouter();
+  const [quizSets, setQuizSets] = useState([]);
+  const [error, setError] = useState(null);
+
+  const getScoredQuizzes = useCallback(async () => {
+    try {
+      await axios
+        .get(
+          "https://oo-cu-quiz.onrender.com/quizSet/scored",
+          {},
+          { headers: { authorization: `${localStorage.getItem("token")}` } }
+        )
+        .then((response) => {
+          setQuizSets(response.data);
+        });
+    } catch (error) {
+      setError("เกิดข้อผิดพลาดในการดึงข้อมูลชุดคำถาม");
+    }
+  }, []);
 
   const onFrameClick = useCallback(() => {
     router.push("/");
@@ -19,6 +39,10 @@ const CheckInAttendantView = () => {
   const onFrame3Click = useCallback(() => {
     router.push("/check-in-quiz-for-scoring");
   }, [router]);
+
+  useEffect(() => {
+    getScoredQuizzes();
+  }, [getScoredQuizzes]);
 
   return (
     <div className="w-full relative bg-white h-[1128px] overflow-hidden text-left text-29xl text-black font-inter">
@@ -73,6 +97,24 @@ const CheckInAttendantView = () => {
           ตรวจคำตอบ
         </div>
       </button>
+      {quizSets.map((quizSet) => (
+          leftswitch = (leftswitch+1)%2,
+          leftoffset = leftswitch ? 730 : 130,
+          topoffset = leftswitch ? topoffset : topoffset+200,
+        <div key={quizSet._id}>
+          <QuizOnAtten
+          name={quizSet.title}
+          description="description"
+          author={quizSet.createdBy}
+          topValue={topoffset}
+          leftValue={leftoffset}
+          quizsetid={quizSet._id}
+          score={quizSet.score}    
+          //date
+        />
+          {/* Render other details of quizSet */}
+        </div>
+      ))}
     </div>
   );
 };

@@ -10,3 +10,32 @@ body {
 ::after {
   border-width: 0;
 }
+#input{
+  background-color: transparent;
+  width: 600px;
+  height: 50px;
+  font-size:16pt;
+  border: none;
+  outline: none;
+}
+#Ninput{
+  background-color: transparent;
+  width: 420px;
+  height: 50px;
+  font-size:16pt;
+  border: none;
+  outline: none;
+}
+#inputDate{
+  background-color: transparent;
+  width: 280px;
+  height: 50px;
+  font-size:16pt;
+  border: none;
+  outline: none;
+}
+#add{
+  background-color: transparent;
+  border: none;
+  outline: none;
+}

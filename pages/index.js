@@ -1,15 +1,23 @@
-import { useCallback } from "react";
-import QuizOnHome6 from "../components/quiz-on-home6";
-import QuizOnHome5 from "../components/quiz-on-home5";
-import QuizOnHome4 from "../components/quiz-on-home4";
-import QuizOnHome3 from "../components/quiz-on-home3";
-import QuizOnHome2 from "../components/quiz-on-home2";
-import QuizOnHome1 from "../components/quiz-on-home1";
+import { useState, useEffect, useCallback } from "react";
+import axios from "axios";
+import QuizOnHome1 from "./quiz-on-home1";
 import { useRouter } from "next/router";
 
 const Homepage = () => {
   const router = useRouter();
+  const [quizSets, setQuizSets] = useState([]);
+  const [error, setError] = useState(null);
 
+  const fetchQuizSets = useCallback(async () => {
+    try {
+      await axios.get("https://oo-cu-quiz.onrender.com/quizSet/").then((response) => {
+        setQuizSets(response.data);
+      });
+    } catch (error) {
+      setError("เกิดข้อผิดพลาดในการดึงข้อมูลชุดคำถาม");
+    }
+  }, []);
+  
   const onFrameClick = useCallback(() => {
     router.push("/login");
   }, [router]);
@@ -25,6 +33,29 @@ const Homepage = () => {
   const onFrame3Click = useCallback(() => {
     router.push("/check-in-quiz-for-scoring");
   }, [router]);
+
+  let topoffset = 214;
+  let leftoffset = 130;
+  let leftswitch = 1;
+
+
+  let loginshow = "โปรดเข้าสู่ระบบ"
+    // Check if token exists in local storage
+    if (typeof localStorage !== 'undefined') {
+      // Check if token exists in local storage
+      const token = localStorage.getItem("token");
+      if (token) {
+
+          loginshow = "เข้าสู่ระบบแล้ว"
+      }
+  } else {
+      console.warn("localStorage is not available.");
+  }
+
+
+  useEffect(() => {
+    fetchQuizSets();
+  }, [fetchQuizSets]);
 
   return (
     <div className="w-full relative bg-white h-[1263px] overflow-hidden text-left text-xl text-black font-inter">
@@ -61,12 +92,24 @@ const Homepage = () => {
         <div className="absolute top-[1079px] left-[832px] rounded-10xs bg-gainsboro-200 box-border w-[47px] h-[47px] flex flex-col items-center justify-center border-[1px] border-solid border-black">
           <div className="relative font-medium">13</div>
         </div>
-        <QuizOnHome6 />
-        <QuizOnHome5 />
-        <QuizOnHome4 />
-        <QuizOnHome3 />
-        <QuizOnHome2 />
-        <QuizOnHome1 />
+        {quizSets.map((quizSet) => (
+          leftswitch = (leftswitch+1)%2,
+          leftoffset = leftswitch ? 730 : 130,
+          topoffset = leftswitch ? topoffset : topoffset+200,
+        <div key={quizSet._id}>
+          <QuizOnHome1
+          name={quizSet.title}
+          description="description"
+          author={quizSet.createdBy}
+          topValue={topoffset}
+          leftValue={leftoffset}
+          quizsetid={quizSet._id}
+        />
+          {/* Render other details of quizSet */}
+        </div>
+      ))}
+
+
       </div>
       <div className="absolute top-[276px] left-[41px] w-[321px] h-[58px] flex flex-row items-center justify-start gap-[62px] text-29xl">
         <img className="w-[33px] relative h-[33px]" alt="" src="/star-1.svg" />
@@ -86,8 +129,8 @@ const Homepage = () => {
             onClick={onFrameClick}
           >
             <button className="cursor-pointer [border:none] p-0 bg-mistyrose-100 w-[109px] relative rounded-2xl h-[33px]" />
-            <div className="w-[103px] relative text-5xl font-inter text-black text-left inline-block mt-[-33px]">
-              เข้าสู่ระบบ
+            <div className="w-[103px] relative text-15xl font-inter text-black text-left inline-block mt-[-33px]">
+              {loginshow}
             </div>
           </button>
           <img
