@@ -9,6 +9,49 @@ const CreateQuiz = () => {
   const [endDate, setEndDate] = useState("");
   const [quizzes, setQuizzes] = useState([]);
   const [error, setError] = useState(null);
+  const [question, setQuestion] = useState("");
+  const [choices, setChoices] = useState([
+    { choiceText: "", isCorrect: false },
+    { choiceText: "", isCorrect: false },
+    { choiceText: "", isCorrect: false },
+    { choiceText: "", isCorrect: false }
+  ]);
+
+  const [subjectiveQuestion, setSubjectiveQuestion] = useState("");
+
+  const addQuestion = () => {
+    const newQuiz = {
+      title: question,
+      choices: choices,
+      score: 1 // You may adjust this value as needed
+    };
+    setQuizzes([...quizzes, newQuiz]);
+    setQuestion("");
+    setChoices([
+      { choiceText: "", isCorrect: false },
+      { choiceText: "", isCorrect: false },
+      { choiceText: "", isCorrect: false },
+      { choiceText: "", isCorrect: false }
+    ]);
+  };
+
+  const addSubjectiveQuestion = () => {
+    const newQuiz = {
+      title: subjectiveQuestion,
+      textAnswer: "",
+      score: 1 // You may adjust this value as needed
+    };
+    setQuizzes([...quizzes, newQuiz]);
+    setSubjectiveQuestion("");
+  };
+
+  const onAddQuestionClick = () => {
+    addQuestion();
+  };
+
+  const onAddSubjectiveQuestionClick = () => {
+    addSubjectiveQuestion();
+  };
 
   const onGroupButtonClick = useCallback(async () => {
     try {
@@ -161,22 +204,28 @@ const CreateQuiz = () => {
           </div>
         </div>
 
-        <button className="absolute top-[900px] left-[60px] text-xl font-medium" id="add">
-          +เพิ่มโจทย์แบบเลือกคำตอบ
+        <button className="absolute top-[900px] left-[60px] text-xl font-medium" id="add" onClick={onAddQuestionClick}>
+          +เพิ่มโจทย์แบบเลือกตัวเลือก
         </button>
-        <button className="absolute top-[900px] left-[640px] text-xl font-medium" id="add">
-          +เพิ่มโจทย์แบบเติมตัวเลือก
+        <button className="absolute top-[900px] left-[640px] text-xl font-medium" id="add" onClick={onAddSubjectiveQuestionClick}>
+          +เพิ่มโจทย์แบบเติมคำตอบ
         </button>
 
-        <div id="form-container">
-          {/* Render the form questions */}
-          {quizzes.map(({ question, id }) => (
-            <div className="question" key={id}>
-              <label className="question-label">{question}</label>
-              <input type="text" className="answer" name="answer[]" />
-            </div>
-          ))}
-        </div>
+        {/* Render added questions */}
+        {quizzes.map((quiz, index) => (
+          <div key={index}>
+            <h3>{quiz.title}</h3>
+            {quiz.choices && (
+              <ul>
+                {quiz.choices.map((choice, index) => (
+                  <li key={index}>
+                    {choice.choiceText} - {choice.isCorrect ? "Correct" : "Incorrect"}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
 
 
 
@@ -193,11 +242,6 @@ const CreateQuiz = () => {
         </button>
 
       </div>
-      
-      
-      
-      
-      
       
       
       
