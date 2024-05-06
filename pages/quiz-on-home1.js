@@ -26,7 +26,6 @@ const QuizOnHome1 = ({ name, description, author, topValue, leftValue, quizsetid
     [router]
   );
 
-  let testtoken = localStorage.getItem("token");
 
   return (
     <button

@@ -52,7 +52,6 @@ const CheckInAttendantView = () => {
           ควิซที่ได้รับคะแนนแล้ว
         </div>
       </div>
-      <div className="absolute top-[145.5px] left-[-0.5px] box-border w-[1600px] h-px border-t-[1px] border-solid border-black" />
       <img
         className="absolute top-[18px] left-[580px] w-[352px] h-[100px] object-cover"
         alt=""

@@ -1,52 +1,12 @@
+import { useCallback } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
-import { useState, useEffect, useCallback } from "react";
 
 const QuizSet = () => {
   const router = useRouter();
-  const [name, setName] = useState([]);
-  const [description, setDescription] = useState([]);
-  const [author, setAuthor] = useState([]);
-  const [amount, setAmount] = useState([]);
-  const [date, setDate] = useState([]);
-  const [error, setError] = useState(null);
 
-  const onGroupContainer1Click = useCallback(
-    async () => {
-
-      try {
-        router.push("/quiz");
-      } catch (error) {
-        setError("เกิดข้อผิดพลาดในการดึงข้อมูลชุดคำถาม");
-      }
-    },
-    [router]
-  );
-
-  const fetchQuizSets = useCallback(async () => {
-    // เอาข้อมูลที่ได้ตรงนี้ไปใช้ในหน้า QuizSet แต่ต้องเปลี่ยนเป็นใช้ useEffect หน้า /quiz-set แทน?
-    try {
-      await axios
-        .get(
-          `https://oo-cu-quiz.onrender.com/quizSet/id/${localStorage.getItem("quizsetid")}`,
-          { headers: { authorization: `${localStorage.getItem("token")}` } }
-        )
-        .then((response) => {
-          setName(response.data.title)
-          setDescription(response.data.description)
-          setAuthor(response.data.createdBy)
-          setAmount(response.data.quizzes.length)
-          setDate(response.data.endDate)
-          console.log(response.data);
-        });
-    } catch (error) {
-      setError("เกิดข้อผิดพลาดในการดึงข้อมูลชุดคำถาม");
-    }
+  const onGroupContainer1Click = useCallback(() => {
+    router.push("/quiz");
   }, [router]);
-
-  useEffect(() => {
-    fetchQuizSets();
-  }, [fetchQuizSets]);
 
   return (
     <div className="w-full relative bg-white h-[1024px] overflow-hidden text-left text-xl text-black font-inter">
@@ -64,22 +24,17 @@ const QuizSet = () => {
         src="/cuquiz-logo-2@2x.png"
       />
       <div className="absolute top-[232px] left-[311px] text-6xl font-medium">
-        {name}
+        ชื่อควิช
       </div>
       <div className="absolute top-[278px] left-[311px] font-medium">
-        {description}
+        description
       </div>
       <div className="absolute top-[318px] left-[311px] font-medium">
-        จำนวนข้อ {amount}
+        จำนวนข้อ
       </div>
-      <div className="absolute top-[358px] left-[311px] font-medium">
-        คะแนน {amount}
-        </div>
+      <div className="absolute top-[358px] left-[311px] font-medium">คะแนน</div>
       <div className="absolute top-[398px] left-[311px] font-medium">
-        ผู้สร้าง {author}
-      </div>
-      <div className="absolute top-[438px] left-[311px] font-medium">
-        เวลาในการทำ {date}
+        เวลาในการทำแบบทดสอบ
       </div>
       <div
         className="absolute top-[478px] left-[604px] w-[300px] h-[69px] cursor-pointer text-9xl text-white"
